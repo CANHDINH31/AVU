@@ -1,0 +1,40 @@
+export interface Friend {
+  id: number;
+  accountId: number;
+  userId: string;
+  username?: string;
+  displayName?: string;
+  zaloName?: string;
+  avatar?: string;
+  bgavatar?: string;
+  cover?: string;
+  gender?: number;
+  dob?: number;
+  sdob?: string;
+  status?: string;
+  phoneNumber?: string;
+  isFr: number;
+  isBlocked: number;
+  lastActionTime?: number;
+  lastUpdateTime?: number;
+  isActive: number;
+  friendKey?: number;
+  type: number;
+  isActivePC: number;
+  isActiveWeb: number;
+  isValid: number;
+  userKey?: string;
+  accountStatus: number;
+  oaInfo?: any;
+  user_mode: number;
+  globalId?: string;
+  bizPkg?: any;
+  createdTs: number;
+  oa_status?: any;
+  createdAt: Date;
+  updatedAt: Date;
+  account: {
+    displayName: string;
+    zaloName: string;
+  };
+}
