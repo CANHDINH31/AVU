@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
@@ -48,6 +49,17 @@ import { PhoneNumberModule } from './phone-number/phone-number.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST') || 'localhost',
+          port: parseInt(configService.get('REDIS_PORT') || '6379', 10),
+          password: configService.get('REDIS_PASSWORD') || 'Zalo@123',
+        },
+      }),
+      inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
