@@ -47,14 +47,14 @@ export class PhoneNumberService {
     private readonly scanQueue: Queue,
   ) {}
 
-  private static readonly DAILY_SCAN_LIMIT = 240;
+  private static readonly DAILY_SCAN_LIMIT = 150;
   private static readonly AUTO_FRIEND_REQUEST_DAILY_LIMIT = 40;
   private static readonly FRIEND_DETAIL_MAX_ENTRIES = 200;
   private static readonly MAX_PENDING_FRIEND_REQUESTS = 500;
   private static readonly AUTO_FRIEND_REQUEST_SEND_BATCH = 40;
   private static readonly AUTO_FRIEND_REQUEST_CANCEL_BATCH = 50;
   private static readonly DEFAULT_TIME_ZONE = 'Asia/Ho_Chi_Minh';
-  private static readonly AUTO_MESSAGE_DAILY_LIMIT = 240;
+  private static readonly AUTO_MESSAGE_DAILY_LIMIT = 160;
 
   private formatDate(
     date: Date,

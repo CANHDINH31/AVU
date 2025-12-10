@@ -208,9 +208,9 @@ export class DailyScanTracking {
 
   @ApiProperty({
     description: 'Maximum number of automatic messages per day',
-    default: 240,
+    default: 160,
   })
-  @Column({ type: 'int', default: 240 })
+  @Column({ type: 'int', default: 160 })
   limitAutoMessageToday: number;
 
   @ApiProperty({
