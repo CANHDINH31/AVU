@@ -54,7 +54,7 @@ import { DailyScanStatisticsCard } from "./DailyScanStatisticsCard";
 import { PhoneNumberBulkActions } from "./PhoneNumberBulkActions";
 
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500] as const;
-const AUTO_SCAN_WINDOW = { startHour: 7, endHour: 14 };
+const AUTO_SCAN_WINDOW = { startHour: 8, endHour: 12 };
 
 type ToastVariant = "default" | "destructive" | "success";
 
@@ -1457,13 +1457,16 @@ export function PhoneNumbersManagement({
     }
   };
 
-  // Check if current time is within message auto-scan windows (9-11h or 14-16h)
+  // Check if current time is within message auto-scan windows (9h-10h30 or 14h-15h30)
   const isWithinMessageAutoScanWindow = useMemo(() => {
     const now = new Date();
     const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
     return (
-      (currentHour >= 9 && currentHour < 11) ||
-      (currentHour >= 14 && currentHour < 16)
+      currentHour === 9 ||
+      (currentHour === 10 && currentMinute <= 30) ||
+      currentHour === 14 ||
+      (currentHour === 15 && currentMinute <= 30)
     );
   }, []);
 
