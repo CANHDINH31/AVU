@@ -1501,7 +1501,7 @@ export function PhoneNumbersManagement({
       toast({
         title: enabled ? "Đã bật gửi tự động" : "Đã tắt gửi tự động",
         description: enabled
-          ? "Hệ thống sẽ tự động gửi tin nhắn trong khung giờ 9h-11h và 14h-16h, cách nhau 30 phút"
+          ? "Hệ thống sẽ tự động gửi tin nhắn trong khung giờ 9h-10h30 và 14h-15h30, cách nhau 30 phút"
           : "Đã tắt chế độ gửi tự động",
         variant: "default",
       });
