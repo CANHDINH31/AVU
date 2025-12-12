@@ -588,16 +588,6 @@ export function DailyScanStatisticsCard({
                   </div>
                 </div>
               </div>
-              <div className="mt-3 rounded-lg border border-blue-100 bg-blue-50/50 p-2">
-                <div className="flex items-start gap-1.5 text-xs text-blue-900">
-                  <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0 text-blue-600" />
-                  <span>
-                    Hệ thống tự động quét và gửi tin nhắn trong khung giờ 9h-11h
-                    và 14h-16h, cách nhau 30 phút. Không thể bật/tắt trong thời
-                    gian này.
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </CollapsibleSection>

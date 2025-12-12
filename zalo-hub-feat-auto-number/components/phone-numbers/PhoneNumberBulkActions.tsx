@@ -83,7 +83,7 @@ export function PhoneNumberBulkActions({
   isAutoMessageEnabled = false,
   isTogglingAutoMessage = false,
   isDeleting = false,
-  autoScanWindow = { startHour: 7, endHour: 14 },
+  autoScanWindow = { startHour: 8, endHour: 12 },
   isWithinMessageAutoScanWindow = false,
 }: PhoneNumberBulkActionsProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -133,11 +133,11 @@ export function PhoneNumberBulkActions({
     if (!onToggleAutoScan) {
       return;
     }
-    // Không cho bật trong khung giờ 7h-14h
+    // Không cho bật trong khung giờ 8h-12h
     if (!isAutoScanEnabled && enabled && !canEnableAutoScan) {
       return;
     }
-    // Không cho tắt trong khung giờ 7h-14h
+    // Không cho tắt trong khung giờ 8h-12h
     if (isAutoScanEnabled && !enabled && !canDisableAutoScan) {
       return;
     }
@@ -219,12 +219,12 @@ export function PhoneNumberBulkActions({
 
   if (isAutoMessageEnabled) {
     warningMessages.push(
-      `Đang bật gửi tin nhắn tự động. Hệ thống sẽ tự động quét và gửi trong khung giờ 9h-11h và 14h-16h, cách nhau 30 phút. Muốn gửi thủ công cần tắt tự động trước.`
+      `Đang bật gửi tin nhắn tự động. Hệ thống sẽ tự động quét và gửi trong khung giờ 9h-10h30 và 14h-15h30, cách nhau 30 phút. Muốn gửi thủ công cần tắt tự động trước.`
     );
   }
   if (isWithinMessageAutoScanWindow) {
     warningMessages.push(
-      `Đang trong khung giờ tự động (9h-11h hoặc 14h-16h). Không thể bật/tắt gửi tin nhắn tự động trong thời gian này.`
+      `Đang trong khung giờ tự động (9h-10h30 hoặc 14h-15h30). Không thể bật/tắt gửi tin nhắn tự động trong thời gian này.`
     );
   }
 
@@ -236,17 +236,19 @@ export function PhoneNumberBulkActions({
     extraContent,
   }: {
     manualButton: React.ReactNode;
-    autoToggle: React.ReactNode;
+    autoToggle?: React.ReactNode;
     autoTimePicker?: React.ReactNode;
     extraContent?: React.ReactNode;
   }) => (
     <div className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-gradient-to-r from-slate-50 to-white p-3.5 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="flex-1 min-w-0">{manualButton}</div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {autoToggle}
-          {autoTimePicker}
-        </div>
+        {(autoToggle || autoTimePicker) && (
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {autoToggle}
+            {autoTimePicker}
+          </div>
+        )}
       </div>
       {extraContent && <div className="mt-2">{extraContent}</div>}
     </div>
@@ -429,7 +431,7 @@ export function PhoneNumberBulkActions({
                   <div className="flex items-center gap-1.5 rounded-lg border border-purple-200 bg-purple-50 px-2 py-1.5 shadow-sm">
                     <Clock className="h-3.5 w-3.5 text-purple-600" />
                     <span className="text-xs font-medium text-purple-700">
-                      9h-11h & 14h-16h
+                      9h-10h30 & 14h-15h30
                     </span>
                   </div>
                 )

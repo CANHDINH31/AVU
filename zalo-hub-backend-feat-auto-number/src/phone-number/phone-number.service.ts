@@ -47,14 +47,14 @@ export class PhoneNumberService {
     private readonly scanQueue: Queue,
   ) {}
 
-  private static readonly DAILY_SCAN_LIMIT = 240;
+  private static readonly DAILY_SCAN_LIMIT = 150;
   private static readonly AUTO_FRIEND_REQUEST_DAILY_LIMIT = 40;
   private static readonly FRIEND_DETAIL_MAX_ENTRIES = 200;
   private static readonly MAX_PENDING_FRIEND_REQUESTS = 500;
   private static readonly AUTO_FRIEND_REQUEST_SEND_BATCH = 40;
   private static readonly AUTO_FRIEND_REQUEST_CANCEL_BATCH = 50;
   private static readonly DEFAULT_TIME_ZONE = 'Asia/Ho_Chi_Minh';
-  private static readonly AUTO_MESSAGE_DAILY_LIMIT = 240;
+  private static readonly AUTO_MESSAGE_DAILY_LIMIT = 160;
 
   private formatDate(
     date: Date,
@@ -1640,7 +1640,7 @@ export class PhoneNumberService {
     };
   }
 
-  @Cron('5 7-14 * * *', {
+  @Cron('5 8-12 * * *', {
     name: 'daily-phone-number-scan',
     timeZone: 'Asia/Ho_Chi_Minh',
   })
@@ -2029,38 +2029,76 @@ export class PhoneNumberService {
     return summary;
   }
 
-  @Cron('0,30 9-11 * * *', {
-    name: 'auto-send-bulk-messages-morning',
+  @Cron('0,30 9 * * *', {
+    name: 'auto-send-bulk-messages-morning-9h',
     timeZone: 'Asia/Ho_Chi_Minh',
   })
-  async autoSendBulkMessagesMorningCron(): Promise<void> {
+  async autoSendBulkMessagesMorning9hCron(): Promise<void> {
     try {
       const result = await this.autoSendBulkMessagesForEligibleAccounts();
       this.logger.log(
-        `[Cron][9-11h] auto-send-bulk-messages: queued=${result.accountsQueued}, skipped=${result.accountsSkipped}, batches=${result.batchesQueued}`,
+        `[Cron][9h] auto-send-bulk-messages: queued=${result.accountsQueued}, skipped=${result.accountsSkipped}, batches=${result.batchesQueued}`,
       );
     } catch (error) {
       this.logger.error(
-        `[Cron][9-11h] auto-send-bulk-messages failed: ${
+        `[Cron][9h] auto-send-bulk-messages failed: ${
           (error as any)?.message || error
         }`,
       );
     }
   }
 
-  @Cron('0,30 14-16 * * *', {
-    name: 'auto-send-bulk-messages-afternoon',
+  @Cron('0,30 10 * * *', {
+    name: 'auto-send-bulk-messages-morning-10h',
     timeZone: 'Asia/Ho_Chi_Minh',
   })
-  async autoSendBulkMessagesAfternoonCron(): Promise<void> {
+  async autoSendBulkMessagesMorning10hCron(): Promise<void> {
     try {
       const result = await this.autoSendBulkMessagesForEligibleAccounts();
       this.logger.log(
-        `[Cron][14-16h] auto-send-bulk-messages: queued=${result.accountsQueued}, skipped=${result.accountsSkipped}, batches=${result.batchesQueued}`,
+        `[Cron][10h] auto-send-bulk-messages: queued=${result.accountsQueued}, skipped=${result.accountsSkipped}, batches=${result.batchesQueued}`,
       );
     } catch (error) {
       this.logger.error(
-        `[Cron][14-16h] auto-send-bulk-messages failed: ${
+        `[Cron][10h] auto-send-bulk-messages failed: ${
+          (error as any)?.message || error
+        }`,
+      );
+    }
+  }
+
+  @Cron('0,30 14 * * *', {
+    name: 'auto-send-bulk-messages-afternoon-14h',
+    timeZone: 'Asia/Ho_Chi_Minh',
+  })
+  async autoSendBulkMessagesAfternoon14hCron(): Promise<void> {
+    try {
+      const result = await this.autoSendBulkMessagesForEligibleAccounts();
+      this.logger.log(
+        `[Cron][14h] auto-send-bulk-messages: queued=${result.accountsQueued}, skipped=${result.accountsSkipped}, batches=${result.batchesQueued}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `[Cron][14h] auto-send-bulk-messages failed: ${
+          (error as any)?.message || error
+        }`,
+      );
+    }
+  }
+
+  @Cron('0,30 15 * * *', {
+    name: 'auto-send-bulk-messages-afternoon-15h',
+    timeZone: 'Asia/Ho_Chi_Minh',
+  })
+  async autoSendBulkMessagesAfternoon15hCron(): Promise<void> {
+    try {
+      const result = await this.autoSendBulkMessagesForEligibleAccounts();
+      this.logger.log(
+        `[Cron][15h] auto-send-bulk-messages: queued=${result.accountsQueued}, skipped=${result.accountsSkipped}, batches=${result.batchesQueued}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `[Cron][15h] auto-send-bulk-messages failed: ${
           (error as any)?.message || error
         }`,
       );
