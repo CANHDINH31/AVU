@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "DNH Zalo",
+  title: "QĐ Zalo",
   description: "Manage multiple Zalo accounts efficiently",
   icons: {
     icon: "/dnh.png",
