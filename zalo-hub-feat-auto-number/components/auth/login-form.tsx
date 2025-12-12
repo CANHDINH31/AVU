@@ -84,8 +84,11 @@ export function LoginForm({ onLogin, onSwitchToRegister }: LoginFormProps) {
             <MessageCircle className="w-8 h-8 text-white" />
           </div>
         </div>
-        <CardTitle className="text-2xl">QĐ Zalo</CardTitle>
-        <p className="text-gray-600">Quản lý nhiều tài khoản Zalo</p>
+        <CardTitle className="text-2xl">
+          Đăng nhập
+          <param name="" value="" />
+        </CardTitle>
+        <p className="text-gray-600"></p>
       </CardHeader>
       <CardContent>
         <Form {...form}>

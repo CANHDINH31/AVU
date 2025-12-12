@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   title: "QĐ Zalo",
   description: "Manage multiple Zalo accounts efficiently",
   icons: {
-    icon: "/dnh.png",
-    shortcut: "/dnh.png",
-    apple: "/dnh.png",
+    icon: "https://stc-zaloprofile.zdn.vn/favicon.ico",
+    shortcut: "https://stc-zaloprofile.zdn.vn/favicon.ico",
+    apple: "https://stc-zaloprofile.zdn.vn/favicon.ico",
   },
 };
 
