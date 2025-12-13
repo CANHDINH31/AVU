@@ -1652,7 +1652,7 @@ export class PhoneNumberService {
   }> {
     this.logger.log('Bắt đầu quét số điện thoại tự động (cronjob)');
     const activeAccounts = await this.accountRepository.find({
-      where: { scanEnabled: true },
+      where: { scanEnabled: true, isConnect: 1 },
       select: ['id'],
     });
 
@@ -1914,7 +1914,7 @@ export class PhoneNumberService {
     errors: string[];
   }> {
     const accounts = await this.accountRepository.find({
-      where: { autoMessageEnabled: true },
+      where: { autoMessageEnabled: true, isConnect: 1 },
     });
 
     if (accounts.length === 0) {
