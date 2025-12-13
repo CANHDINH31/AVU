@@ -29,6 +29,9 @@ export class AccountService {
     userId: number,
     createAccountDto: CreateAccountDto,
   ): Promise<Account> {
+    // Prepare the data to save, ensuring status is properly handled
+    const accountData = { ...createAccountDto };
+
     // Check if account with same userZaloId exists
     if (createAccountDto.userZaloId) {
       const existingAccount = await this.accountRepository.findOne({
@@ -40,10 +43,7 @@ export class AccountService {
         // If account exists, check if userId matches
         if (existingAccount.userId === userId) {
           // Same user, update existing account
-          await this.accountRepository.update(
-            existingAccount.id,
-            createAccountDto,
-          );
+          await this.accountRepository.update(existingAccount.id, accountData);
           const updatedAccount = await this.accountRepository.findOne({
             where: { id: existingAccount.id },
             relations: ['user'],
@@ -55,7 +55,7 @@ export class AccountService {
         } else {
           // Different user, update userId and other fields
           await this.accountRepository.update(existingAccount.id, {
-            ...createAccountDto,
+            ...accountData,
             userId,
           });
           const updatedAccount = await this.accountRepository.findOne({
@@ -72,7 +72,7 @@ export class AccountService {
 
     // Create new account if no existing account found
     const account = this.accountRepository.create({
-      ...createAccountDto,
+      ...accountData,
       userId,
     });
     return await this.accountRepository.save(account);

@@ -139,7 +139,7 @@ export class Account {
   sdob: string;
 
   @ApiProperty({ description: 'Account status', required: false })
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   status: string;
 
   @ApiProperty({ description: 'Account type', required: false })
