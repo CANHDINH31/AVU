@@ -1670,8 +1670,6 @@ export class PhoneNumberService {
     let totalBatches = 0;
     let accountsProcessed = 0;
 
-    console.log('activeAccounts', activeAccounts?.length);
-
     for (const account of activeAccounts) {
       const tracking = await this.getOrCreateDailyTracking(
         account.id,

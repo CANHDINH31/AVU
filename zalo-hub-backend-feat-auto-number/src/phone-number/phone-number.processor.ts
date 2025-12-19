@@ -253,7 +253,7 @@ export class PhoneNumberProcessor {
       // Delay 5 seconds between scans to avoid rate limiting
       // Only delay if not the last item in the batch
       if (index < batch.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 60000));
       }
     }
 
@@ -426,7 +426,7 @@ export class PhoneNumberProcessor {
 
       if (index < phoneNumberIds.length - 1) {
         // Delay 15 seconds between messages to avoid Zalo rate limiting
-        await new Promise((resolve) => setTimeout(resolve, 15000));
+        await new Promise((resolve) => setTimeout(resolve, 50000));
       }
     }
 
