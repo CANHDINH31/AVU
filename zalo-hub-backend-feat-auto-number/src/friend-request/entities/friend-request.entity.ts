@@ -71,7 +71,7 @@ export class FriendRequest {
 
   @ApiProperty()
   @Column({ type: 'decimal', precision: 20, scale: 0, nullable: true })
-  recommTime: string; // dùng string vì JS không chính xác với số lớn > 2^53
+  recommTime: string | null; // dùng string vì JS không chính xác với số lớn > 2^53
 
   @ApiProperty()
   @Column({ nullable: true })
