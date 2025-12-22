@@ -392,7 +392,9 @@ export class ZaloService {
           existingFriendRequest.type = requestData.type;
           existingFriendRequest.recommType = requestData.recommType;
           existingFriendRequest.recommSrc = requestData.recommSrc;
-          existingFriendRequest.recommTime = requestData.recommTime;
+          existingFriendRequest.recommTime = requestData.recommTime
+            ? String(requestData.recommTime)
+            : null;
           existingFriendRequest.recommInfo = JSON.stringify(
             requestData.recommInfo,
           );
@@ -414,7 +416,9 @@ export class ZaloService {
           friendRequestEntity.type = requestData.type;
           friendRequestEntity.recommType = requestData.recommType;
           friendRequestEntity.recommSrc = requestData.recommSrc;
-          friendRequestEntity.recommTime = requestData.recommTime;
+          friendRequestEntity.recommTime = requestData.recommTime
+            ? String(requestData.recommTime)
+            : null;
           friendRequestEntity.recommInfo = JSON.stringify(
             requestData.recommInfo,
           );

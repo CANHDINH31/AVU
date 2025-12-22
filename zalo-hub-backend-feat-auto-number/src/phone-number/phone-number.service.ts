@@ -1722,7 +1722,25 @@ export class PhoneNumberService {
       // Xóa những job có name = 'scan-batch'
       for (const job of jobs) {
         if (job.name === 'scan-batch') {
-          await job.remove();
+          try {
+            // Chỉ xóa job nếu không đang được xử lý (active jobs có thể không xóa được)
+            const jobState = await job.getState();
+            if (jobState !== 'active') {
+              await job.remove();
+            } else {
+              // Nếu job đang active, thử hủy job trước rồi mới xóa
+              await job.moveToFailed(
+                new Error('Job cancelled by scheduler'),
+                true,
+              );
+              await job.remove();
+            }
+          } catch (error: unknown) {
+            // Log lỗi nhưng tiếp tục xử lý, không throw để không làm gián đoạn cron job
+            const errorMessage =
+              error instanceof Error ? error.message : String(error);
+            this.logger.warn(`Could not remove job ${job.id}: ${errorMessage}`);
+          }
         }
       }
 
@@ -2701,10 +2719,28 @@ export class PhoneNumberService {
 
     const jobs = await this.scanQueue.getJobs(['waiting', 'active', 'delayed']);
 
-    // Xóa những job có name = 'scan-batch'
+    // Xóa những job có name = 'send-bulk-messages-batch'
     for (const job of jobs) {
       if (job.name === 'send-bulk-messages-batch') {
-        await job.remove();
+        try {
+          // Chỉ xóa job nếu không đang được xử lý (active jobs có thể không xóa được)
+          const jobState = await job.getState();
+          if (jobState !== 'active') {
+            await job.remove();
+          } else {
+            // Nếu job đang active, thử hủy job trước rồi mới xóa
+            await job.moveToFailed(
+              new Error('Job cancelled by scheduler'),
+              true,
+            );
+            await job.remove();
+          }
+        } catch (error: unknown) {
+          // Log lỗi nhưng tiếp tục xử lý, không throw để không làm gián đoạn cron job
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          this.logger.warn(`Could not remove job ${job.id}: ${errorMessage}`);
+        }
       }
     }
 

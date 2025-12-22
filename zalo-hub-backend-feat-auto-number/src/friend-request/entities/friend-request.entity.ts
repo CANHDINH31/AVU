@@ -70,8 +70,8 @@ export class FriendRequest {
   recommSrc: number;
 
   @ApiProperty()
-  @Column({ nullable: true })
-  recommTime: number;
+  @Column({ type: 'decimal', precision: 20, scale: 0, nullable: true })
+  recommTime: string; // dùng string vì JS không chính xác với số lớn > 2^53
 
   @ApiProperty()
   @Column({ nullable: true })
