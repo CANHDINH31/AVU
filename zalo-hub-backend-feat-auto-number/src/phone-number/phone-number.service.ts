@@ -1713,6 +1713,19 @@ export class PhoneNumberService {
         phoneNumber: p.phoneNumber,
       }));
 
+      const jobs = await this.scanQueue.getJobs([
+        'waiting',
+        'active',
+        'delayed',
+      ]);
+
+      // Xóa những job có name = 'scan-batch'
+      for (const job of jobs) {
+        if (job.name === 'scan-batch') {
+          await job.remove();
+        }
+      }
+
       await this.scanQueue.add(
         'scan-batch',
         {
@@ -1720,12 +1733,7 @@ export class PhoneNumberService {
           accountId: tracking.accountId,
         },
         {
-          attempts: 3,
-          timeout: 600000,
-          backoff: {
-            type: 'exponential',
-            delay: 2000,
-          },
+          timeout: 3600000,
           removeOnComplete: true,
           removeOnFail: false,
         },
@@ -2691,6 +2699,15 @@ export class PhoneNumberService {
       batches.push(queuedPhoneIds.slice(i, i + BATCH_SIZE));
     }
 
+    const jobs = await this.scanQueue.getJobs(['waiting', 'active', 'delayed']);
+
+    // Xóa những job có name = 'scan-batch'
+    for (const job of jobs) {
+      if (job.name === 'send-bulk-messages-batch') {
+        await job.remove();
+      }
+    }
+
     // Thêm từng batch vào queue
     // Mỗi batch 20 số sẽ được xử lý tuần tự trong processor với delay 15s giữa các tin nhắn
     for (let i = 0; i < batches.length; i++) {
@@ -2711,19 +2728,7 @@ export class PhoneNumberService {
           // removeOnFail: false -> Giữ lại job khi thất bại để có thể xem lại hoặc retry
           // Nếu set true thì sẽ mất thông tin về job thất bại
           removeOnFail: false,
-
-          // attempts: 3 -> Số lần retry tối đa nếu job thất bại
-          // Nếu job fail, Bull sẽ tự động retry tối đa 3 lần trước khi đánh dấu failed
-          attempts: 3,
-
-          // backoff: Cấu hình thời gian chờ giữa các lần retry
-          backoff: {
-            type: 'exponential', // Tăng dần theo cấp số nhân: 2s, 4s, 8s...
-            delay: 2000, // Delay ban đầu là 2 giây (2000ms)
-            // Lần retry 1: chờ 2s
-            // Lần retry 2: chờ 4s
-            // Lần retry 3: chờ 8s
-          },
+          timeout: 1800000,
         },
       );
     }
