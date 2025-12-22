@@ -38,7 +38,7 @@ export class FriendRequestResponseDto {
   recommSrc?: number;
 
   @ApiProperty({ description: 'Recommendation time', required: false })
-  recommTime?: string; // dùng string vì JS không chính xác với số lớn > 2^53
+  recommTime?: string | null; // dùng string vì JS không chính xác với số lớn > 2^53
 
   @ApiProperty({ description: 'Recommendation info', required: false })
   recommInfo?: string;
