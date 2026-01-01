@@ -54,8 +54,8 @@ export class FriendRequest {
   @Column({ nullable: true })
   recommSrc: number;
 
-  @Column({ nullable: true })
-  recommTime: number;
+  @Column({ type: "decimal", precision: 20, scale: 0, nullable: true })
+  recommTime: string | null; // dùng string vì JS không chính xác với số lớn > 2^53
 
   @Column({ nullable: true })
   recommInfo: string;

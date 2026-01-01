@@ -93,7 +93,7 @@ export class Account {
   @Column({ nullable: true })
   sdob: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   status: string;
 
   @Column({ nullable: true })
