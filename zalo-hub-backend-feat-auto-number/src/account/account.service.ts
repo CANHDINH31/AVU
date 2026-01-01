@@ -161,6 +161,22 @@ export class AccountService {
     try {
       const account = await this.findOne(id);
 
+      // Get current user to check if admin
+      const currentUser = await this.userRepository.findOne({
+        where: { id: currentUserId },
+      });
+
+      if (!currentUser) {
+        throw new NotFoundException('Current user not found');
+      }
+
+      // If admin, hard delete from database
+      if (currentUser.role === UserRole.ADMIN) {
+        await this.accountRepository.delete(id);
+        return { success: true, deleted: true };
+      }
+
+      // If not admin, check permission and soft delete (set userId to null)
       if (account.userId !== currentUserId) {
         throw new ForbiddenException(
           'You do not have permission to delete this account',
@@ -175,7 +191,7 @@ export class AccountService {
         .where('id = :id', { id })
         .execute();
 
-      return { success: true };
+      return { success: true, deleted: false };
     } catch (error) {
       // Re-throw known exceptions (ForbiddenException, NotFoundException)
       if (
