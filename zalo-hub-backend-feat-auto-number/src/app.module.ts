@@ -10,6 +10,7 @@ import { BullModule } from '@nestjs/bull';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { UserRank } from './user/entities/user-rank.entity';
 import { ZaloModule } from './zalo/zalo.module';
 import { Account } from './account/entities/account.entity';
 import { AccountModule } from './account/account.module';
@@ -73,6 +74,7 @@ import { PhoneNumberModule } from './phone-number/phone-number.module';
         database: configService.get('DB_DATABASE'),
         entities: [
           User,
+          UserRank,
           Account,
           Friend,
           Conversation,

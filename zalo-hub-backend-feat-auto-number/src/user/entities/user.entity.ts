@@ -1,5 +1,6 @@
 import { Account } from '../../account/entities/account.entity';
 import { Territory } from '../../territory/entities/territory.entity';
+import { UserRank } from './user-rank.entity';
 import {
   Entity,
   Column,
@@ -8,7 +9,9 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToMany,
+  ManyToOne,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 
 export enum UserRole {
@@ -44,6 +47,13 @@ export class User {
     comment: '0: inactive, 1: active',
   })
   active: number;
+
+  @Column({ nullable: true, comment: 'ID của rank khách hàng' })
+  rankId: number;
+
+  @ManyToOne(() => UserRank, (rank) => rank.users, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'rankId' })
+  rank: UserRank;
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];

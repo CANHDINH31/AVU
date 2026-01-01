@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from './entities/user.entity';
+import { UserRank, UserRankName } from './entities/user-rank.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { SearchUserDto } from './dto/search-user.dto';
@@ -14,6 +15,8 @@ export class UserService {
     private userRepository: Repository<User>,
     @InjectRepository(Territory)
     private territoryRepository: Repository<Territory>,
+    @InjectRepository(UserRank)
+    private userRankRepository: Repository<UserRank>,
   ) {}
 
   async create(userData: Partial<User>): Promise<User> {
@@ -28,6 +31,30 @@ export class UserService {
     // Hash password if provided
     if (userData.password) {
       userData.password = await bcrypt.hash(userData.password, 10);
+    }
+
+    // Set default rank (dong) if rankId is not provided or invalid
+    if (!userData.rankId) {
+      const defaultRank = await this.userRankRepository.findOne({
+        where: { name: UserRankName.DONG },
+      });
+      if (defaultRank) {
+        userData.rankId = defaultRank.id;
+      }
+    } else {
+      // Verify that the provided rankId exists
+      const rank = await this.userRankRepository.findOne({
+        where: { id: userData.rankId },
+      });
+      if (!rank) {
+        // If rank doesn't exist, use default rank
+        const defaultRank = await this.userRankRepository.findOne({
+          where: { name: UserRankName.DONG },
+        });
+        if (defaultRank) {
+          userData.rankId = defaultRank.id;
+        }
+      }
     }
 
     const user = this.userRepository.create(userData);
