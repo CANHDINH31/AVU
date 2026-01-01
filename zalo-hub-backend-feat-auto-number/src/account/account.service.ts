@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -11,6 +12,7 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 import { UpdateAccountSettingsDto } from './dto/update-account-settings.dto';
 import { ZaloService } from '../zalo/zalo.service';
 import { User, UserRole } from '../user/entities/user.entity';
+import { UserRank } from '../user/entities/user-rank.entity';
 import { Territory } from '../territory/entities/territory.entity';
 
 @Injectable()
@@ -20,6 +22,8 @@ export class AccountService {
     private accountRepository: Repository<Account>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(UserRank)
+    private userRankRepository: Repository<UserRank>,
     @InjectRepository(Territory)
     private territoryRepository: Repository<Territory>,
     private zaloService: ZaloService,
@@ -29,6 +33,53 @@ export class AccountService {
     userId: number,
     createAccountDto: CreateAccountDto,
   ): Promise<Account> {
+    // Get user with rank to check account limit
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['rank'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Check if user is admin - admins have no limit
+    if (user.role !== UserRole.ADMIN) {
+      // Check account limit based on user rank
+      if (user.rank) {
+        // Count current accounts for this user
+        const currentAccountCount = await this.accountRepository.count({
+          where: { userId },
+        });
+
+        // Check if adding this account would exceed the limit
+        // If updating existing account (same userZaloId), don't count it as new
+        let isUpdatingExisting = false;
+        if (createAccountDto.userZaloId) {
+          const existingAccount = await this.accountRepository.findOne({
+            where: { userZaloId: createAccountDto.userZaloId },
+          });
+          if (existingAccount && existingAccount.userId === userId) {
+            isUpdatingExisting = true;
+          }
+        }
+
+        // If not updating existing account, check limit
+        if (!isUpdatingExisting) {
+          if (currentAccountCount >= user.rank.maxAccounts) {
+            throw new BadRequestException(
+              `Bạn đã đạt đến giới hạn số tài khoản cho rank ${user.rank.displayName} (${user.rank.maxAccounts} tài khoản). Vui lòng nâng cấp rank để thêm nhiều tài khoản hơn.`,
+            );
+          }
+        }
+      } else {
+        // User has no rank, use default limit (0 or throw error)
+        throw new BadRequestException(
+          'User không có rank. Vui lòng liên hệ admin để được gán rank.',
+        );
+      }
+    }
+
     // Prepare the data to save, ensuring status is properly handled
     const accountData = { ...createAccountDto };
 

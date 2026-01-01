@@ -13,6 +13,7 @@ import { accountApi, zaloApi } from "@/lib/api";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { Account } from "@/lib/types/account";
 import { triggerApi } from "@/lib/api";
+import { toast } from "sonner";
 
 interface AddZaloAccountModalProps {
   open: boolean;
@@ -71,24 +72,37 @@ export function AddZaloAccountModal({
 
           const { userId: userResponseId, key, ...rest } = res.data;
 
-          const account = await accountApi.create({
-            ...rest,
-            accountKey: key,
-            userZaloId: userResponseId,
-            imei: res.session.imei,
-            cookies: JSON.stringify(res.session.cookie),
-            userAgent: res.session.userAgent,
-          });
+          try {
+            const account = await accountApi.create({
+              ...rest,
+              accountKey: key,
+              userZaloId: userResponseId,
+              imei: res.session.imei,
+              cookies: JSON.stringify(res.session.cookie),
+              userAgent: res.session.userAgent,
+            });
 
-          onAccountAdded?.(account.id);
+            onAccountAdded?.(account.id);
 
-          await triggerApi.triggerCheckAccounts();
+            await triggerApi.triggerCheckAccounts();
 
-          refetch();
+            refetch();
 
-          onOpenChange(false);
-          setQrCodeUrl("");
-          setCountdown(0);
+            onOpenChange(false);
+            setQrCodeUrl("");
+            setCountdown(0);
+          } catch (error: any) {
+            // Handle error when creating account (e.g., rank limit exceeded)
+            const errorMessage =
+              error?.response?.data?.message ||
+              error?.message ||
+              "Không thể tạo tài khoản. Vui lòng thử lại.";
+            toast.error(errorMessage);
+            clearTimers();
+            onOpenChange(false);
+            setQrCodeUrl("");
+            setCountdown(0);
+          }
         }
       } catch (error) {
         console.error("Polling error:", error);
