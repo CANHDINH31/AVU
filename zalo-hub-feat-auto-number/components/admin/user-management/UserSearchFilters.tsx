@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,17 +14,25 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { UserSearchFiltersProps } from "./types";
+import { userRankApi } from "@/lib/api/user-rank";
 
 export function UserSearchFilters({
   searchTerm,
   pageSize,
   activeFilter,
   roleFilter,
+  rankFilter,
   onSearchChange,
   onPageSizeChange,
   onActiveFilterChange,
   onRoleFilterChange,
+  onRankFilterChange,
 }: UserSearchFiltersProps) {
+  // Load ranks for filter
+  const { data: ranks = [], isLoading: isLoadingRanks } = useQuery({
+    queryKey: ["user-ranks"],
+    queryFn: userRankApi.getAll,
+  });
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
@@ -75,6 +84,28 @@ export function UserSearchFilters({
                 <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="manager">Manager</SelectItem>
                 <SelectItem value="user">User</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Select
+              value={rankFilter === undefined ? "all" : rankFilter.toString()}
+              onValueChange={(value) =>
+                onRankFilterChange(value === "all" ? undefined : Number(value))
+              }
+              disabled={isLoadingRanks}
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Rank" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả rank</SelectItem>
+                {ranks.map((rank) => (
+                  <SelectItem key={rank.id} value={rank.id.toString()}>
+                    {rank.displayName}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

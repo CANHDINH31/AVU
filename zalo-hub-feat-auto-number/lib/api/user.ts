@@ -4,6 +4,14 @@ import { User } from "../schemas/user";
 export interface UserWithRole extends User {
   role: string;
   active: number;
+  rankId?: number;
+  rank?: {
+    id: number;
+    name: string;
+    displayName: string;
+    maxAccounts: number;
+    order: number;
+  };
   createdAt?: string;
   updatedAt?: string;
 }
@@ -56,6 +64,7 @@ export const userApi = {
     search?: string;
     active?: number;
     role?: string;
+    rankId?: number;
   }): Promise<PaginatedUsersResponse> => {
     try {
       const queryParams = new URLSearchParams();
@@ -65,6 +74,8 @@ export const userApi = {
       if (params?.active !== undefined)
         queryParams.append("active", params.active.toString());
       if (params?.role) queryParams.append("role", params.role);
+      if (params?.rankId !== undefined)
+        queryParams.append("rankId", params.rankId.toString());
 
       const url = `/admin/users${
         queryParams.toString() ? `?${queryParams.toString()}` : ""
@@ -101,6 +112,20 @@ export const userApi = {
       console.error(error);
       throw new Error(
         error.response?.data?.message || "Cập nhật quyền người dùng thất bại"
+      );
+    }
+  },
+
+  updateUserRank: async (id: string, rankId: number): Promise<UserWithRole> => {
+    try {
+      const response = await api.put<UserWithRole>(`/admin/users/${id}/rank`, {
+        rankId,
+      });
+      return response;
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(
+        error.response?.data?.message || "Cập nhật rank người dùng thất bại"
       );
     }
   },

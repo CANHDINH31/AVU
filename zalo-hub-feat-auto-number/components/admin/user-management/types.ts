@@ -35,10 +35,12 @@ export interface UserSearchFiltersProps {
   pageSize: number;
   activeFilter?: number;
   roleFilter?: string;
+  rankFilter?: number;
   onSearchChange: (value: string) => void;
   onPageSizeChange: (size: number) => void;
   onActiveFilterChange: (value?: number) => void;
   onRoleFilterChange: (value?: string) => void;
+  onRankFilterChange: (value?: number) => void;
 }
 
 export interface UserTableProps {
@@ -51,9 +53,11 @@ export interface UserTableProps {
   onDeactivate: (userId: string) => void;
   onChangePassword: (userId: string) => void;
   onUpdateRole: (userId: string, newRole: string) => void;
+  onUpdateRank?: (userId: string, rankId: number) => void;
   isEditDialogOpen: boolean;
   selectedUser: UserWithRole | null;
   updateRoleMutation: any;
+  updateRankMutation?: any;
   deleteUserMutation: any;
   activateMutation: any;
   deactivateMutation: any;
@@ -95,7 +99,9 @@ export interface EditUserDialogProps {
   selectedUser: UserWithRole | null;
   onSelectedUserChange: (user: UserWithRole) => void;
   onUpdateRole: (userId: string, newRole: string) => void;
+  onUpdateRank?: (userId: string, rankId: number) => void;
   updateRoleMutation: any;
+  updateRankMutation?: any;
 }
 
 export interface UserPaginationProps {

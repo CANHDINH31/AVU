@@ -32,6 +32,7 @@ export function UserManagement({
     undefined
   );
   const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
+  const [rankFilter, setRankFilter] = useState<number | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -61,6 +62,7 @@ export function UserManagement({
       searchTerm,
       activeFilter,
       roleFilter,
+      rankFilter,
     ],
     queryFn: () =>
       userApi.getAllUsers({
@@ -69,6 +71,7 @@ export function UserManagement({
         search: searchTerm || undefined,
         active: activeFilter,
         role: roleFilter,
+        rankId: rankFilter,
       }),
   });
 
@@ -110,6 +113,22 @@ export function UserManagement({
     },
     onError: (error: any) => {
       toast.error(error?.message || "Cập nhật vài trò thất bại !");
+    },
+  });
+
+  // Update user rank mutation
+  const updateRankMutation = useMutation({
+    mutationFn: ({ id, rankId }: { id: string; rankId: number }) =>
+      userApi.updateUserRank(id, rankId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      queryClient.invalidateQueries({ queryKey: ["users-stats"] });
+      setIsEditDialogOpen(false);
+      setSelectedUser(null);
+      toast.success("Cập nhật rank thành công !");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "Cập nhật rank thất bại !");
     },
   });
 
@@ -170,6 +189,12 @@ export function UserManagement({
     setCurrentPage(1); // Reset to first page when filtering
   };
 
+  // Handle rank filter change
+  const handleRankFilterChange = (value?: number) => {
+    setRankFilter(value);
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
   // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -192,6 +217,10 @@ export function UserManagement({
 
   const handleUpdateRole = (userId: string, newRole: string) => {
     updateRoleMutation.mutate({ id: userId, role: newRole });
+  };
+
+  const handleUpdateRank = (userId: string, rankId: number) => {
+    updateRankMutation.mutate({ id: userId, rankId });
   };
 
   const handleDeleteUser = (userId: string) => {
@@ -273,10 +302,12 @@ export function UserManagement({
           pageSize={pageSize}
           activeFilter={activeFilter}
           roleFilter={roleFilter}
+          rankFilter={rankFilter}
           onSearchChange={handleSearch}
           onPageSizeChange={handlePageSizeChange}
           onActiveFilterChange={handleActiveFilterChange}
           onRoleFilterChange={handleRoleFilterChange}
+          onRankFilterChange={handleRankFilterChange}
         />
 
         <UserStats
@@ -302,9 +333,11 @@ export function UserManagement({
           onDeactivate={handleDeactivateUser}
           onChangePassword={handleOpenChangePasswordDialog}
           onUpdateRole={handleUpdateRole}
+          onUpdateRank={handleUpdateRank}
           isEditDialogOpen={isEditDialogOpen}
           selectedUser={selectedUser}
           updateRoleMutation={updateRoleMutation}
+          updateRankMutation={updateRankMutation}
           deleteUserMutation={deleteUserMutation}
           activateMutation={activateMutation}
           deactivateMutation={deactivateMutation}

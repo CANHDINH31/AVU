@@ -54,4 +54,15 @@ export class GetUsersDto {
   @IsOptional()
   @IsIn(['admin', 'manager', 'user'])
   role?: string;
+
+  @ApiProperty({
+    example: 1,
+    required: false,
+    description: 'Filter by rank ID',
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  rankId?: number;
 }

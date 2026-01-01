@@ -26,9 +26,11 @@ export function UserTable({
   onDeactivate,
   onChangePassword,
   onUpdateRole,
+  onUpdateRank,
   isEditDialogOpen,
   selectedUser,
   updateRoleMutation,
+  updateRankMutation,
   deleteUserMutation,
   activateMutation,
   deactivateMutation,
@@ -81,6 +83,7 @@ export function UserTable({
                       <TableHead>Người dùng</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Quyền</TableHead>
+                      <TableHead>Rank</TableHead>
                       <TableHead>Trạng thái</TableHead>
                       <TableHead>Ngày tạo</TableHead>
                       <TableHead className="text-right">Thao tác</TableHead>
@@ -112,21 +115,30 @@ export function UserTable({
         </CardContent>
       </Card>
 
-      {selectedUser && (
-        <EditUserDialog
-          isOpen={isEditDialogOpen}
-          onOpenChange={(open) => {
-            if (!open) {
-              onEditUser(null as any);
-            }
-          }}
-          user={selectedUser}
-          selectedUser={selectedUser}
-          onSelectedUserChange={onEditUser}
-          onUpdateRole={onUpdateRole}
-          updateRoleMutation={updateRoleMutation}
-        />
-      )}
+      {selectedUser &&
+        (() => {
+          // Find the original user from the users array to compare against
+          const originalUser =
+            users.find((u) => u.id === selectedUser.id) || selectedUser;
+
+          return (
+            <EditUserDialog
+              isOpen={isEditDialogOpen}
+              onOpenChange={(open) => {
+                if (!open) {
+                  onEditUser(null as any);
+                }
+              }}
+              user={originalUser}
+              selectedUser={selectedUser}
+              onSelectedUserChange={onEditUser}
+              onUpdateRole={onUpdateRole}
+              onUpdateRank={onUpdateRank}
+              updateRoleMutation={updateRoleMutation}
+              updateRankMutation={updateRankMutation}
+            />
+          );
+        })()}
 
       <UserPagination
         currentPage={currentPage}

@@ -100,6 +100,22 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async updateRank(id: number, rankId: number): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) return null;
+
+    // Verify that the provided rankId exists
+    const rank = await this.userRankRepository.findOne({
+      where: { id: rankId },
+    });
+    if (!rank) {
+      throw new BadRequestException(`Rank with ID ${rankId} not found`);
+    }
+
+    user.rankId = rankId;
+    return await this.userRepository.save(user);
+  }
+
   async isAdmin(userId: number): Promise<boolean> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     return user?.role === UserRole.ADMIN;
@@ -226,6 +242,7 @@ export class UserService {
     search?: string,
     active?: number,
     role?: string,
+    rankId?: number,
   ): Promise<{
     data: User[];
     total: number;
@@ -237,27 +254,49 @@ export class UserService {
   }> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
+    // Load rank relation
+    queryBuilder.leftJoinAndSelect('user.rank', 'rank');
+
+    // Track if we have any conditions
+    let hasConditions = false;
+
     // Add search condition if provided
     if (search) {
       queryBuilder.where(
         '(user.name LIKE :search OR user.email LIKE :search)',
         { search: `%${search}%` },
       );
+      hasConditions = true;
     }
 
     // Add active filter if provided
     if (active !== undefined) {
-      if (search) {
+      if (hasConditions) {
         queryBuilder.andWhere('user.active = :active', { active });
       } else {
         queryBuilder.where('user.active = :active', { active });
+        hasConditions = true;
       }
     }
 
     // Add role filter if provided
     if (role) {
-      const condition = search || active !== undefined ? 'andWhere' : 'where';
-      queryBuilder[condition]('user.role = :role', { role });
+      if (hasConditions) {
+        queryBuilder.andWhere('user.role = :role', { role });
+      } else {
+        queryBuilder.where('user.role = :role', { role });
+        hasConditions = true;
+      }
+    }
+
+    // Add rank filter if provided
+    if (rankId !== undefined) {
+      if (hasConditions) {
+        queryBuilder.andWhere('user.rankId = :rankId', { rankId });
+      } else {
+        queryBuilder.where('user.rankId = :rankId', { rankId });
+        hasConditions = true;
+      }
     }
 
     // Add pagination

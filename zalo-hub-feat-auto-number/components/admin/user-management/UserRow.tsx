@@ -17,7 +17,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Edit, Trash2, UserCheck, UserX, Key } from "lucide-react";
 import { UserRowProps } from "./types";
-import { getRoleBadgeVariant, getRoleIcon, formatDate } from "./utils";
+import {
+  getRoleBadgeVariant,
+  getRoleIcon,
+  formatDate,
+  getRankBadgeColor,
+} from "./utils";
 import { EditUserDialog } from "./EditUserDialog";
 
 export function UserRow({
@@ -55,6 +60,18 @@ export function UserRow({
             {getRoleIcon(user.role)}
             <span className="ml-1 capitalize">{user.role}</span>
           </Badge>
+        </TableCell>
+        <TableCell>
+          {user.rank ? (
+            <Badge
+              variant="outline"
+              className={getRankBadgeColor(user.rank.name)}
+            >
+              {user.rank.displayName}
+            </Badge>
+          ) : (
+            <span className="text-gray-400 text-sm">Chưa có rank</span>
+          )}
         </TableCell>
         <TableCell>
           <Badge variant={user.active === 1 ? "default" : "secondary"}>

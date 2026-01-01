@@ -3,6 +3,7 @@
 import React from "react";
 import { MessageCircle } from "lucide-react";
 import { AdminMenu } from "@/components/ui/admin-menu";
+import { getUser } from "@/lib/auth";
 
 interface DashboardHeaderProps {
   userName: string;
@@ -27,6 +28,8 @@ export function DashboardHeader({
   onOpenRanks,
   onOpenUploads,
 }: DashboardHeaderProps) {
+  const user = getUser();
+  console.log(user);
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

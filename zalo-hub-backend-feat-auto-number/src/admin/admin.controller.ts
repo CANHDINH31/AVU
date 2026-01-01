@@ -23,6 +23,7 @@ import {
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
+import { UpdateUserRankDto } from './dto/update-user-rank.dto';
 import { GetUsersDto } from './dto/get-users.dto';
 import { PaginatedUsersDto } from './dto/paginated-users.dto';
 import { AdminChangePasswordDto } from './dto/change-password.dto';
@@ -54,6 +55,7 @@ export class AdminController {
       query.search,
       query.active,
       query.role,
+      query.rankId,
     );
   }
 
@@ -130,6 +132,34 @@ export class AdminController {
     }
 
     return this.userService.updateRole(id, updateUserRoleDto.role);
+  }
+
+  @Put('users/:id/rank')
+  @ApiOperation({ summary: 'Update user rank (Admin only)' })
+  @ApiResponse({
+    status: 200,
+    description: 'User rank updated successfully.',
+    type: User,
+  })
+  async updateUserRank(
+    @Req() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserRankDto: UpdateUserRankDto,
+  ) {
+    // Check if user is admin
+    const isAdmin = await this.userService.isAdmin(req.user.sub);
+    if (!isAdmin) {
+      throw new ForbiddenException('Only admin users can access this endpoint');
+    }
+
+    const user = await this.userService.updateRank(
+      id,
+      updateUserRankDto.rankId,
+    );
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
   }
 
   @Put('users/:id/activate')
