@@ -10,6 +10,7 @@ interface UserPermissionsPageProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
 }
@@ -23,6 +24,7 @@ export function UserPermissionsPage({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
 }: UserPermissionsPageProps) {
@@ -56,6 +58,7 @@ export function UserPermissionsPage({
         onOpenAccounts={onOpenAccounts}
         onOpenAdminUsers={onOpenAdminUsers}
         onOpenTerritories={onOpenTerritories}
+        onOpenRanks={onOpenRanks}
         onOpenUploads={onOpenUploads}
         onLogout={onLogout}
       />

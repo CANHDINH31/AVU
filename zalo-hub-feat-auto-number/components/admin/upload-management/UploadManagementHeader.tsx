@@ -13,6 +13,7 @@ interface UploadManagementHeaderProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onOpenUploadUsers?: () => void;
   onOpenUploadPermissions?: () => void;
@@ -27,6 +28,7 @@ export function UploadManagementHeader({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onOpenUploadUsers,
   onOpenUploadPermissions,
@@ -65,6 +67,7 @@ export function UploadManagementHeader({
               onOpenAccounts={onOpenAccounts}
               onOpenAdminUsers={onOpenAdminUsers}
               onOpenTerritories={onOpenTerritories}
+              onOpenRanks={onOpenRanks}
               onOpenUploads={onOpenUploads}
               onOpenUploadUsers={onOpenUploadUsers}
               onOpenUploadPermissions={onOpenUploadPermissions}

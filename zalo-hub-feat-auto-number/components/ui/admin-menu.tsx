@@ -18,6 +18,7 @@ import {
   LogOut,
   MoreVertical,
   Folder,
+  Award,
 } from "lucide-react";
 import { getUser } from "@/lib/auth";
 import { uploadApi } from "@/lib/api/upload";
@@ -28,6 +29,7 @@ interface AdminMenuProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onOpenUploadUsers?: () => void;
   onOpenUploadPermissions?: () => void;
@@ -44,6 +46,7 @@ export function AdminMenu({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onOpenUploadUsers,
   onOpenUploadPermissions,
@@ -102,6 +105,11 @@ export function AdminMenu({
         {isAdmin && onOpenTerritories && (
           <DropdownMenuItem onClick={onOpenTerritories}>
             <Shield className="w-4 h-4 mr-2" /> Quản lý nhóm
+          </DropdownMenuItem>
+        )}
+        {isAdmin && onOpenRanks && (
+          <DropdownMenuItem onClick={onOpenRanks}>
+            <Award className="w-4 h-4 mr-2" /> Quản lý rank
           </DropdownMenuItem>
         )}
         {(isAdmin || hasUploadAccess) && onOpenUploads && (

@@ -153,6 +153,7 @@ export default function TerritoryDetailPage() {
         isAdmin={true}
         onOpenAdminUsers={() => router.push("/admin/users")}
         onOpenTerritories={() => router.push("/admin/territories")}
+        onOpenRanks={() => router.push("/admin/ranks")}
         onOpenAccounts={() => router.push("/accounts")}
         onOpenChangePassword={() => router.push("/dashboard?changePassword=1")}
         onLogout={() => {

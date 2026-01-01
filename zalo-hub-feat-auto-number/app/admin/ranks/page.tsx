@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { UserManagement } from "@/components/admin/user-management";
 import { getUser, removeUser } from "@/lib/auth";
 import { useEffect, useState } from "react";
+import { RankManagement } from "@/components/admin/rank-management/RankManagement";
 import { ChangePasswordDialog } from "@/components/ui/change-password-dialog";
 import { userApi } from "@/lib/api/user";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export default function AdminUsersPage() {
+export default function AdminRanksPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,7 @@ export default function AdminUsersPage() {
 
   return (
     <>
-      <UserManagement
+      <RankManagement
         onBack={handleBack}
         isAdmin={true}
         onOpenChangePassword={() => setIsChangePasswordOpen(true)}
@@ -102,3 +102,4 @@ export default function AdminUsersPage() {
     </>
   );
 }
+

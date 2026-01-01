@@ -12,6 +12,7 @@ interface DashboardHeaderProps {
   onLogout: () => void;
   onOpenChangePassword: () => void;
   onOpenTerritories: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads: () => void;
 }
 
@@ -23,6 +24,7 @@ export function DashboardHeader({
   onLogout,
   onOpenChangePassword,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
 }: DashboardHeaderProps) {
   return (
@@ -46,6 +48,7 @@ export function DashboardHeader({
             onLogout={onLogout}
             onOpenChangePassword={onOpenChangePassword}
             onOpenTerritories={onOpenTerritories}
+            onOpenRanks={onOpenRanks}
             onOpenUploads={onOpenUploads}
             variant="outline"
             size="default"

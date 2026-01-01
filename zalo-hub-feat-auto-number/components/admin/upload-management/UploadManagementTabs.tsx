@@ -17,6 +17,7 @@ interface UploadManagementTabsProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
 }
@@ -30,6 +31,7 @@ export function UploadManagementTabs({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
 }: UploadManagementTabsProps) {
@@ -105,6 +107,7 @@ export function UploadManagementTabs({
         onOpenAccounts={onOpenAccounts}
         onOpenAdminUsers={onOpenAdminUsers}
         onOpenTerritories={onOpenTerritories}
+        onOpenRanks={onOpenRanks}
         onOpenUploads={onOpenUploads}
         onLogout={onLogout}
       />

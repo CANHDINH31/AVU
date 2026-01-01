@@ -10,6 +10,7 @@ interface UploadManagementProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onOpenUploadUsers?: () => void;
   onOpenUploadPermissions?: () => void;
@@ -23,6 +24,7 @@ export function UploadManagement({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onOpenUploadUsers,
   onOpenUploadPermissions,
@@ -36,6 +38,7 @@ export function UploadManagement({
       onOpenAccounts={onOpenAccounts}
       onOpenAdminUsers={onOpenAdminUsers}
       onOpenTerritories={onOpenTerritories}
+      onOpenRanks={onOpenRanks}
       onOpenUploads={onOpenUploads}
       onOpenUploadUsers={onOpenUploadUsers}
       onOpenUploadPermissions={onOpenUploadPermissions}

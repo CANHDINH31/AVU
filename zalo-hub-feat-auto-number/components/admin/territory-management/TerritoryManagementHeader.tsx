@@ -13,6 +13,7 @@ interface TerritoryManagementHeaderProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
   onCreateTerritoryClick?: () => void;
@@ -26,6 +27,7 @@ export function TerritoryManagementHeader({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
   onCreateTerritoryClick,
@@ -67,6 +69,7 @@ export function TerritoryManagementHeader({
               onOpenAccounts={onOpenAccounts}
               onOpenAdminUsers={onOpenAdminUsers}
               onOpenTerritories={onOpenTerritories}
+              onOpenRanks={onOpenRanks}
               onOpenUploads={onOpenUploads}
               onLogout={onLogout}
               icon={<MoreVertical className="w-4 h-4 mr-2" />}

@@ -82,6 +82,7 @@ export default function AdminTerritoriesPage() {
         onOpenAccounts={() => router.push("/accounts")}
         onOpenAdminUsers={() => router.push("/admin/users")}
         onOpenTerritories={() => router.push("/admin/territories")}
+        onOpenRanks={() => router.push("/admin/ranks")}
         onOpenUploads={() => router.push("/admin/uploads")}
         onLogout={handleLogout}
       />

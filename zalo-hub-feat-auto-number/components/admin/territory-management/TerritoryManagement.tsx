@@ -62,6 +62,7 @@ interface TerritoryManagementProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
 }
@@ -73,6 +74,7 @@ export function TerritoryManagement({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
 }: TerritoryManagementProps) {
@@ -220,6 +222,7 @@ export function TerritoryManagement({
         onOpenAccounts={onOpenAccounts}
         onOpenAdminUsers={onOpenAdminUsers}
         onOpenTerritories={onOpenTerritories}
+        onOpenRanks={onOpenRanks}
         onOpenUploads={onOpenUploads}
         onLogout={onLogout}
         onCreateTerritoryClick={openCreate}

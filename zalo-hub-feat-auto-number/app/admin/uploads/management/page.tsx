@@ -77,6 +77,7 @@ export default function AdminUploadManagementPage() {
         onOpenAccounts={() => router.push("/accounts")}
         onOpenAdminUsers={() => router.push("/admin/users")}
         onOpenTerritories={() => router.push("/admin/territories")}
+        onOpenRanks={() => router.push("/admin/ranks")}
         onOpenUploads={() => router.push("/admin/uploads/management")}
         onOpenUploadUsers={() => router.push("/admin/uploads/users")}
         onOpenUploadPermissions={() =>

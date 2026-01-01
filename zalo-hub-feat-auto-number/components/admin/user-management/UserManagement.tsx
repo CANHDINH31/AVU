@@ -22,6 +22,7 @@ export function UserManagement({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
 }: UserManagementProps) {
@@ -260,6 +261,7 @@ export function UserManagement({
         onOpenAccounts={onOpenAccounts}
         onOpenAdminUsers={onOpenAdminUsers}
         onOpenTerritories={onOpenTerritories}
+        onOpenRanks={onOpenRanks}
         onOpenUploads={onOpenUploads}
         onLogout={onLogout}
         onCreateUserClick={() => setIsCreateDialogOpen(true)}

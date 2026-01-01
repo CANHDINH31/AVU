@@ -7,6 +7,7 @@ export interface UserManagementProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
 }

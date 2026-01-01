@@ -116,6 +116,7 @@ interface PhoneNumbersManagementProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
 }
@@ -127,6 +128,7 @@ export function PhoneNumbersManagement({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
 }: PhoneNumbersManagementProps) {

@@ -50,6 +50,7 @@ interface ZaloAccountManagerProps {
   onOpenAccounts?: () => void;
   onOpenAdminUsers?: () => void;
   onOpenTerritories?: () => void;
+  onOpenRanks?: () => void;
   onOpenUploads?: () => void;
   onLogout?: () => void;
 }
@@ -61,6 +62,7 @@ export function ZaloAccountManager({
   onOpenAccounts,
   onOpenAdminUsers,
   onOpenTerritories,
+  onOpenRanks,
   onOpenUploads,
   onLogout,
 }: ZaloAccountManagerProps) {
@@ -258,6 +260,7 @@ export function ZaloAccountManager({
                 onOpenAccounts={onOpenAccounts}
                 onOpenAdminUsers={onOpenAdminUsers}
                 onOpenTerritories={onOpenTerritories}
+                onOpenRanks={onOpenRanks}
                 onOpenUploads={onOpenUploads}
                 onLogout={onLogout}
                 icon={<MoreVertical className="w-4 h-4 mr-2" />}

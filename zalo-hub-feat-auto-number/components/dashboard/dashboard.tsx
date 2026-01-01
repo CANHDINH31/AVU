@@ -189,6 +189,7 @@ export function Dashboard({
         onLogout={onLogout}
         onOpenChangePassword={() => setIsChangePasswordOpen(true)}
         onOpenTerritories={() => router.push("/admin/territories")}
+        onOpenRanks={() => router.push("/admin/ranks")}
         onOpenUploads={() => router.push("/admin/uploads")}
       />
 
