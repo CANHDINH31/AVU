@@ -157,16 +157,38 @@ export class AccountService {
     return await this.accountRepository.save(account);
   }
 
-  async remove(id: number, currentUserId: number): Promise<void> {
-    const account = await this.findOne(id);
+  async remove(id: number, currentUserId: number): Promise<any> {
+    try {
+      const account = await this.findOne(id);
 
-    if (account.userId !== currentUserId) {
-      throw new ForbiddenException(
-        'You do not have permission to delete this account',
+      if (account.userId !== currentUserId) {
+        throw new ForbiddenException(
+          'You do not have permission to delete this account',
+        );
+      }
+
+      // Use query builder to set userId to null (TypeORM handles null better than undefined)
+      await this.accountRepository
+        .createQueryBuilder()
+        .update(Account)
+        .set({ userId: () => 'NULL' })
+        .where('id = :id', { id })
+        .execute();
+
+      return { success: true };
+    } catch (error) {
+      // Re-throw known exceptions (ForbiddenException, NotFoundException)
+      if (
+        error instanceof ForbiddenException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+      // Log and re-throw unexpected errors
+      throw new Error(
+        `Failed to remove account: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
-
-    await this.accountRepository.update(id, { userId: undefined });
   }
 
   async updateSettings(
