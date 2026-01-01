@@ -17,6 +17,8 @@ import {
 import { Users, QrCode, Play, RefreshCw, Search } from "lucide-react";
 import { generateAvatarUrl } from "@/lib/utils/avatar";
 import { UserWithRole } from "@/lib/api/user";
+import { getUser } from "@/lib/auth";
+import { toast } from "sonner";
 
 interface ZaloAccountItem {
   id?: string | number;
@@ -89,6 +91,36 @@ export function ZaloAccountsGrid({
   isLoadingUserOptions = false,
   allUsers = [],
 }: ZaloAccountsGridProps) {
+  const handleOpenAccounts = () => {
+    const user = getUser();
+
+    // Admin can add unlimited accounts
+    if (user?.role === "admin") {
+      onOpenAccounts();
+      return;
+    }
+
+    // Check if user has rank
+    if (!user?.rank) {
+      toast.error("Bạn chưa có rank. Vui lòng liên hệ admin để được gán rank.");
+      return;
+    }
+
+    // Check account limit
+    const currentAccountCount = zaloAccounts.length;
+    const maxAccounts = user.rank.maxAccounts;
+
+    if (currentAccountCount >= maxAccounts) {
+      toast.error(
+        `Bạn đã đạt đến giới hạn số tài khoản cho rank ${user.rank.displayName} (${maxAccounts} tài khoản). Vui lòng nâng cấp rank để thêm nhiều tài khoản hơn.`
+      );
+      return;
+    }
+
+    // If not at limit, open the modal
+    onOpenAccounts();
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -221,7 +253,7 @@ export function ZaloAccountsGrid({
             <p className="text-gray-500 mb-4">
               Thêm tài khoản Zalo đầu tiên để bắt đầu
             </p>
-            <Button onClick={onOpenAccounts}>Thêm tài khoản Zalo</Button>
+            <Button onClick={handleOpenAccounts}>Thêm tài khoản Zalo</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -296,7 +328,7 @@ export function ZaloAccountsGrid({
                         className="h-6 px-2 hover:bg-red-50 hover:text-red-600"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onOpenAccounts();
+                          handleOpenAccounts();
                         }}
                       >
                         <RefreshCw className="w-3 h-3" />

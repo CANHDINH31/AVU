@@ -101,6 +101,55 @@ export function ZaloAccountManager({
     refetchOnWindowFocus: false,
   });
 
+  // Handler to check account limit before opening add modal
+  const handleOpenAddModal = async () => {
+    const user = getUser();
+
+    // Admin can add unlimited accounts
+    if (user?.role === "admin") {
+      setShowAddModal(true);
+      return;
+    }
+
+    // Check if user has rank
+    if (!user?.rank) {
+      toast.error("Bạn chưa có rank. Vui lòng liên hệ admin để được gán rank.");
+      return;
+    }
+
+    // Get current user's account count
+    // If viewing own accounts (selectedUserId === "all" or current user), use accounts from main query
+    // Otherwise, fetch current user's accounts separately
+    let currentAccountCount: number;
+    if (
+      selectedUserId === "all" ||
+      selectedUserId === currentUser?.id?.toString()
+    ) {
+      currentAccountCount = accounts.length;
+    } else {
+      // If filtering by another user, fetch current user's accounts
+      try {
+        const currentUserAccounts = await accountApi.me(undefined, undefined);
+        currentAccountCount = currentUserAccounts.length;
+      } catch (error) {
+        // If error, use accounts.length as fallback
+        currentAccountCount = accounts.length;
+      }
+    }
+
+    const maxAccounts = user.rank.maxAccounts;
+
+    if (currentAccountCount >= maxAccounts) {
+      toast.error(
+        `Bạn đã đạt đến giới hạn số tài khoản cho rank ${user.rank.displayName} (${maxAccounts} tài khoản). Vui lòng nâng cấp rank để thêm nhiều tài khoản hơn.`
+      );
+      return;
+    }
+
+    // If not at limit, open the modal
+    setShowAddModal(true);
+  };
+
   // Defer heavy list rendering to keep typing responsive
   const deferredAccounts = useDeferredValue(accounts);
 
@@ -251,7 +300,7 @@ export function ZaloAccountManager({
 
             {/* Button thêm mới và menu cạnh nhau */}
             <div className="flex items-center space-x-2">
-              <Button onClick={() => setShowAddModal(true)}>
+              <Button onClick={handleOpenAddModal}>
                 <Plus className="w-4 h-4 mr-2" /> Thêm tài khoản
               </Button>
               <AdminMenu
@@ -427,7 +476,7 @@ export function ZaloAccountManager({
               isLoading={isLoading}
               accounts={deferredAccounts}
               searchQuery={searchQuery}
-              onOpenAddModal={() => setShowAddModal(true)}
+              onOpenAddModal={handleOpenAddModal}
               onRefreshAccount={handleRefreshAccount}
               onToggleStatus={handleToggleStatus}
               onViewDetail={handleViewDetail}
