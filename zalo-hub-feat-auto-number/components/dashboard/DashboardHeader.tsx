@@ -2,8 +2,10 @@
 
 import React from "react";
 import { MessageCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { AdminMenu } from "@/components/ui/admin-menu";
 import { getUser } from "@/lib/auth";
+import { getRankBadgeColor } from "@/components/admin/user-management/utils";
 
 interface DashboardHeaderProps {
   userName: string;
@@ -29,7 +31,7 @@ export function DashboardHeader({
   onOpenUploads,
 }: DashboardHeaderProps) {
   const user = getUser();
-  console.log(user);
+
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,7 +42,17 @@ export function DashboardHeader({
             </div>
             <div>
               <h1 className="text-xl font-semibold text-gray-900">QĐ Zalo</h1>
-              <p className="text-sm text-gray-500">Xin chào, {userName}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-gray-500">Xin chào, {userName}</p>
+                {user?.rank && (
+                  <Badge
+                    variant="outline"
+                    className={getRankBadgeColor(user.rank.name)}
+                  >
+                    {user.rank.displayName}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
 

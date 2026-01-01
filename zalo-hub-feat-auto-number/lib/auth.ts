@@ -3,6 +3,14 @@ export interface User {
   email: string;
   name: string;
   role?: string;
+  rankId?: number | null;
+  rank?: {
+    id: number;
+    name: string;
+    displayName: string;
+    maxAccounts: number;
+    order: number;
+  } | null;
 }
 
 export interface LoginResponse {

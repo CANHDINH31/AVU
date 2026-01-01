@@ -67,6 +67,16 @@ export class AuthService {
         name: user.name,
         role: user.role,
         active: user.active,
+        rankId: user.rankId || null,
+        rank: user.rank
+          ? {
+              id: user.rank.id,
+              name: user.rank.name,
+              displayName: user.rank.displayName,
+              maxAccounts: user.rank.maxAccounts,
+              order: user.rank.order,
+            }
+          : null,
       },
     };
   }

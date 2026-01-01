@@ -57,6 +57,14 @@ export class LoginResponseDto {
       name: 'John Doe',
       role: 'user',
       active: 1,
+      rankId: 1,
+      rank: {
+        id: 1,
+        name: 'kim_cuong',
+        displayName: 'Kim Cương',
+        maxAccounts: 100,
+        order: 1,
+      },
     },
   })
   user: {
@@ -65,6 +73,14 @@ export class LoginResponseDto {
     name: string;
     role: string;
     active: number;
+    rankId?: number | null;
+    rank?: {
+      id: number;
+      name: string;
+      displayName: string;
+      maxAccounts: number;
+      order: number;
+    } | null;
   };
 }
 
