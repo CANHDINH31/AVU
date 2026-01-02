@@ -57,6 +57,7 @@ import { PhoneNumberModule } from './phone-number/phone-number.module';
         redis: {
           host: configService.get('REDIS_HOST') || 'localhost',
           port: parseInt(configService.get('REDIS_PORT') || '6379', 10),
+          password: configService.get('REDIS_PASSWORD') || 'Zalo@123',
         },
       }),
       inject: [ConfigService],
