@@ -426,7 +426,7 @@ export class PhoneNumberProcessor {
 
       if (index < phoneNumberIds.length - 1) {
         // Delay 15 seconds between messages to avoid Zalo rate limiting
-        await new Promise((resolve) => setTimeout(resolve, 15000));
+        await new Promise((resolve) => setTimeout(resolve, 45000));
       }
     }
 
