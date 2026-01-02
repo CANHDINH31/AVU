@@ -1739,7 +1739,9 @@ export class PhoneNumberService {
             // Log lỗi nhưng tiếp tục xử lý, không throw để không làm gián đoạn cron job
             const errorMessage =
               error instanceof Error ? error.message : String(error);
-            this.logger.warn(`Could not remove job ${job.id}: ${errorMessage}`);
+            this.logger.warn(
+              `Could not remove job scan-batch ${job.id}: ${errorMessage}`,
+            );
           }
         }
       }
@@ -1755,6 +1757,12 @@ export class PhoneNumberService {
           removeOnComplete: true,
           removeOnFail: false,
         },
+      );
+
+      this.logger.log(
+        `[Account ${tracking.accountId}] Đã đẩy ${batch.length} số điện thoại vào queue quét. ` +
+          `(Đã quét hôm nay: ${tracking.dailyScanCount}/${PhoneNumberService.DAILY_SCAN_LIMIT}, ` +
+          `Còn lại quota: ${PhoneNumberService.DAILY_SCAN_LIMIT - tracking.dailyScanCount - batch.length})`,
       );
 
       totalJobs += batch.length;
@@ -2739,7 +2747,9 @@ export class PhoneNumberService {
           // Log lỗi nhưng tiếp tục xử lý, không throw để không làm gián đoạn cron job
           const errorMessage =
             error instanceof Error ? error.message : String(error);
-          this.logger.warn(`Could not remove job ${job.id}: ${errorMessage}`);
+          this.logger.warn(
+            `Could not remove job send-bulk-messages-batch ${job.id}: ${errorMessage}`,
+          );
         }
       }
     }
