@@ -592,6 +592,33 @@ export function PhoneNumbersManagement({
     },
   });
 
+  const deleteAllMutation = useMutation({
+    mutationFn: (accountId?: number) => phoneNumbersApi.deleteAll(accountId),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["phone-numbers"] });
+      queryClient.invalidateQueries({ queryKey: ["daily-scan-statistics"] });
+      setSelectedIds(new Set());
+      toast({
+        title: "Xóa thành công",
+        description: result.message,
+        variant: "default",
+        duration: 5000,
+      });
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Xóa tất cả số điện thoại thất bại";
+      toast({
+        title: "Lỗi",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
+      });
+    },
+  });
+
   const { data: dailyScanStats, isFetching: isDailyScanLoading } = useQuery({
     queryKey: ["daily-scan-statistics", currentAccountId],
     queryFn: () => phoneNumbersApi.getDailyStatistics(currentAccountId!),
@@ -1880,6 +1907,11 @@ export function PhoneNumbersManagement({
           bulkMessageContent={bulkMessageContent}
           bulkMessageContentInput={bulkMessageContentInput}
           onDelete={handleBulkDelete}
+          onDeleteAll={() =>
+            deleteAllMutation.mutate(currentAccountId || undefined)
+          }
+          isDeletingAll={deleteAllMutation.isPending}
+          accountId={currentAccountId}
           isScanning={isAnyScanMutationPending}
           isAutoScanEnabled={!!dailyScanStats?.scanEnabled}
           isTogglingAutoScan={toggleAutoScanMutation.isPending}

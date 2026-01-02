@@ -397,6 +397,43 @@ export class PhoneNumberController {
     return PhoneNumberResponseDto.fromEntity(phoneNumber);
   }
 
+  @Delete('all')
+  @ApiOperation({
+    summary: 'Delete all phone numbers (optionally filtered by accountId)',
+  })
+  @ApiQuery({
+    name: 'accountId',
+    required: false,
+    type: Number,
+    description:
+      'Account ID to filter phone numbers. If not provided, delete all phone numbers.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'All phone numbers deleted successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+        deletedCount: { type: 'number' },
+      },
+    },
+  })
+  async deleteAll(
+    @Query('accountId') accountId?: string,
+  ): Promise<{ message: string; deletedCount: number }> {
+    console.log('accountId', accountId);
+    if (accountId) {
+      const accountIdNum = Number(accountId);
+      if (Number.isNaN(accountIdNum) || accountIdNum <= 0) {
+        throw new BadRequestException('Account ID không hợp lệ');
+      }
+      return await this.phoneNumberService.deleteAll(accountIdNum);
+    }
+
+    return await this.phoneNumberService.deleteAll(undefined);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a phone number' })
   @ApiParam({ name: 'id', type: 'number' })

@@ -572,6 +572,76 @@ export class PhoneNumberService {
     };
   }
 
+  async deleteAll(accountId?: number): Promise<{
+    deletedCount: number;
+    message: string;
+  }> {
+    try {
+      const BATCH_SIZE = 1000; // Xóa 1000 bản ghi mỗi lần để tránh timeout
+      let totalDeleted = 0;
+      let batchDeleted = 0;
+
+      this.logger.log(
+        `Bắt đầu xóa tất cả số điện thoại${accountId ? ` của account ${accountId}` : ' trong hệ thống'}...`,
+      );
+
+      do {
+        // Lấy ID của batch để xóa (TypeORM không hỗ trợ limit trên delete)
+        const queryBuilder = this.phoneNumberRepository
+          .createQueryBuilder('phoneNumber')
+          .select('phoneNumber.id')
+          .limit(BATCH_SIZE);
+
+        if (accountId) {
+          queryBuilder.where('phoneNumber.accountId = :accountId', {
+            accountId,
+          });
+        }
+
+        const phoneNumbers = await queryBuilder.getMany();
+        const ids = phoneNumbers.map((pn) => pn.id);
+
+        if (ids.length === 0) {
+          break; // Không còn bản ghi nào để xóa
+        }
+
+        // Xóa batch theo ID
+        const result = await this.phoneNumberRepository.delete({
+          id: In(ids),
+        });
+
+        batchDeleted = result.affected || 0;
+        totalDeleted += batchDeleted;
+
+        if (batchDeleted > 0) {
+          this.logger.log(
+            `Đã xóa batch: ${batchDeleted} bản ghi. Tổng đã xóa: ${totalDeleted}`,
+          );
+        }
+
+        // Nếu batch này xóa ít hơn số ID lấy được, có nghĩa là đã hết dữ liệu
+      } while (batchDeleted === BATCH_SIZE);
+
+      this.logger.log(
+        `Hoàn thành xóa tất cả số điện thoại${accountId ? ` của account ${accountId}` : ' trong hệ thống'}: ${totalDeleted} bản ghi`,
+      );
+
+      return {
+        deletedCount: totalDeleted,
+        message: accountId
+          ? `Đã xóa ${totalDeleted} số điện thoại của account ${accountId}`
+          : `Đã xóa ${totalDeleted} số điện thoại trong hệ thống`,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Lỗi khi xóa tất cả số điện thoại: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      throw new BadRequestException(
+        `Không thể xóa tất cả số điện thoại: ${error instanceof Error ? error.message : 'Không xác định'}`,
+      );
+    }
+  }
+
   async importExcel(
     file: Express.Multer.File,
     userId: number,

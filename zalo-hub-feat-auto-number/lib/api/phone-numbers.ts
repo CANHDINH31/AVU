@@ -329,6 +329,27 @@ export const phoneNumbersApi = {
     }
   },
 
+  // Xóa tất cả số điện thoại
+  deleteAll: async (
+    accountId?: number
+  ): Promise<{
+    message: string;
+    deletedCount: number;
+  }> => {
+    try {
+      const params = accountId ? `?accountId=${accountId}` : "";
+      const response = await api.delete<{
+        message: string;
+        deletedCount: number;
+      }>(`/phone-numbers/all${params}`);
+      return response;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || "Xóa tất cả số điện thoại thất bại"
+      );
+    }
+  },
+
   // Import từ Excel
   importExcel: async (
     file: File,

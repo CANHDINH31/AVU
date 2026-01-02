@@ -16,7 +16,9 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  AlertTriangle,
 } from "lucide-react";
+import { PhoneNumberDeleteAllDialog } from "./PhoneNumberDeleteAllDialog";
 
 interface PhoneNumberBulkActionsProps {
   selectedCount: number;
@@ -34,6 +36,9 @@ interface PhoneNumberBulkActionsProps {
   bulkMessageContent?: string;
   bulkMessageContentInput?: string;
   onDelete: () => void;
+  onDeleteAll?: () => void;
+  isDeletingAll?: boolean;
+  accountId?: number | null;
   isScanning?: boolean;
   isAutoScanEnabled?: boolean;
   isTogglingAutoScan?: boolean;
@@ -70,6 +75,9 @@ export function PhoneNumberBulkActions({
   bulkMessageContent = "",
   bulkMessageContentInput = "",
   onDelete,
+  onDeleteAll,
+  isDeletingAll = false,
+  accountId,
   isScanning = false,
   isAutoScanEnabled = false,
   isTogglingAutoScan = false,
@@ -87,6 +95,7 @@ export function PhoneNumberBulkActions({
   isWithinMessageAutoScanWindow = false,
 }: PhoneNumberBulkActionsProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
   const bulkMessageContentRef = useRef<HTMLTextAreaElement | null>(null);
   const now = new Date();
   const currentHour = now.getHours();
@@ -500,9 +509,37 @@ export function PhoneNumberBulkActions({
               )}
               Xóa hàng loạt ({selectedCount})
             </Button>
+            {onDeleteAll && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setShowDeleteAllDialog(true)}
+                disabled={isDeletingAll}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isDeletingAll ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <AlertTriangle className="mr-2 h-4 w-4" />
+                )}
+                Xóa hết dữ liệu
+              </Button>
+            )}
           </div>
         </div>
       )}
+
+      {/* Delete All Confirmation Dialog */}
+      <PhoneNumberDeleteAllDialog
+        open={showDeleteAllDialog}
+        onOpenChange={setShowDeleteAllDialog}
+        onConfirm={() => {
+          onDeleteAll?.();
+          setShowDeleteAllDialog(false);
+        }}
+        isPending={isDeletingAll}
+        accountId={accountId}
+      />
     </div>
   );
 }
