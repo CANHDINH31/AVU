@@ -43,7 +43,7 @@ export function MessageDetailsDialog({
     ? "Chi tiết tin nhắn tự động"
     : "Chi tiết tin nhắn thủ công";
   const descriptionLabel = isAutoMode
-    ? "Danh sách tin nhắn đã gửi bằng chế độ tự động trong ngày (Giới hạn: 240 tin nhắn/ngày)"
+    ? "Danh sách tin nhắn đã gửi bằng chế độ tự động trong ngày (Giới hạn: 160 tin nhắn/ngày)"
     : "Danh sách tin nhắn đã gửi thủ công trong ngày";
 
   const formatDateTime = (dateStr: string) =>
@@ -61,6 +61,10 @@ export function MessageDetailsDialog({
   const failedCount =
     messages?.filter((msg) => msg.isSuccess === false).length || 0;
   const totalCount = messages?.length || 0;
+
+  // Tính tỷ lệ thành công
+  const successRate =
+    totalCount > 0 ? ((successCount / totalCount) * 100).toFixed(1) : "0.0";
 
   const renderName = (msg: (typeof messages)[number]) => {
     const phone = msg.phone;
@@ -89,14 +93,14 @@ export function MessageDetailsDialog({
           </div>
         ) : (
           <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
-            <div className="grid grid-cols-3 gap-4 rounded-lg bg-gray-50 p-4 flex-shrink-0">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-gray-50 p-4 flex-shrink-0">
               <div>
                 <div className="text-sm text-gray-600">Tổng số tin nhắn</div>
                 <div className="text-2xl font-bold text-blue-600">
                   {totalCount}
                   {isAutoMode && (
                     <span className="text-sm font-normal text-gray-500 ml-1">
-                      / 240
+                      / 160
                     </span>
                   )}
                 </div>
@@ -111,6 +115,20 @@ export function MessageDetailsDialog({
                 <div className="text-sm text-gray-600">Thất bại</div>
                 <div className="text-2xl font-bold text-rose-600">
                   {failedCount}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Tỷ lệ thành công</div>
+                <div
+                  className={`text-2xl font-bold ${
+                    parseFloat(successRate) >= 90
+                      ? "text-green-600"
+                      : parseFloat(successRate) >= 70
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {successRate}%
                 </div>
               </div>
             </div>

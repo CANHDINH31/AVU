@@ -78,6 +78,10 @@ export function DailyScanDetailsDialog({
     ? statistics?.dailyScanCount || detailRows.length
     : statistics?.manualScanCount || detailRows.length;
 
+  // Tính tỷ lệ scan thành công
+  const successRate =
+    totalScans > 0 ? ((dailyWithInfo / totalScans) * 100).toFixed(1) : "0.0";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
@@ -102,7 +106,7 @@ export function DailyScanDetailsDialog({
         ) : (
           <div className="space-y-4">
             {/* Summary */}
-            <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
               <div>
                 <div className="text-sm text-gray-600">Đã quét hôm nay</div>
                 <div className="text-2xl font-bold text-blue-600">
@@ -119,6 +123,20 @@ export function DailyScanDetailsDialog({
                 <div className="text-sm text-gray-600">Không có thông tin</div>
                 <div className="text-2xl font-bold text-orange-600">
                   {dailyWithoutInfo}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Tỷ lệ thành công</div>
+                <div
+                  className={`text-2xl font-bold ${
+                    parseFloat(successRate) >= 70
+                      ? "text-green-600"
+                      : parseFloat(successRate) >= 50
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {successRate}%
                 </div>
               </div>
             </div>
