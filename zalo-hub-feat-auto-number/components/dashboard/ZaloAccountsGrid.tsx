@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Users, QrCode, Play, RefreshCw, Search } from "lucide-react";
+import { Users, QrCode, Play, RefreshCw, Search, Send } from "lucide-react";
 import { generateAvatarUrl } from "@/lib/utils/avatar";
 import { UserWithRole } from "@/lib/api/user";
 import { getUser } from "@/lib/auth";
@@ -91,6 +92,8 @@ export function ZaloAccountsGrid({
   isLoadingUserOptions = false,
   allUsers = [],
 }: ZaloAccountsGridProps) {
+  const router = useRouter();
+
   const handleOpenAccounts = () => {
     const user = getUser();
 
@@ -127,6 +130,13 @@ export function ZaloAccountsGrid({
         <div className="flex justify-between items-center mb-4">
           <CardTitle>Tài khoản Zalo ({zaloAccounts.length})</CardTitle>
           <div className="flex space-x-2">
+            <Button
+              onClick={() => router.push("/phone-numbers")}
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+            >
+              <Send className="w-4 h-4 mr-2" />
+              Spam tin nhắn
+            </Button>
             {selectedAccounts.length > 0 && (
               <Button
                 onClick={onStartChat}
