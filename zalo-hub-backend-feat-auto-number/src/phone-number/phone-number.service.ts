@@ -1713,38 +1713,7 @@ export class PhoneNumberService {
         phoneNumber: p.phoneNumber,
       }));
 
-      const jobs = await this.scanQueue.getJobs([
-        'waiting',
-        'active',
-        'delayed',
-      ]);
-
-      // Xóa những job có name = 'scan-batch'
-      for (const job of jobs) {
-        if (job.name === 'scan-batch') {
-          try {
-            // Chỉ xóa job nếu không đang được xử lý (active jobs có thể không xóa được)
-            const jobState = await job.getState();
-            if (jobState !== 'active') {
-              await job.remove();
-            } else {
-              // Nếu job đang active, thử hủy job trước rồi mới xóa
-              await job.moveToFailed(
-                new Error('Job cancelled by scheduler'),
-                true,
-              );
-              await job.remove();
-            }
-          } catch (error: unknown) {
-            // Log lỗi nhưng tiếp tục xử lý, không throw để không làm gián đoạn cron job
-            const errorMessage =
-              error instanceof Error ? error.message : String(error);
-            this.logger.warn(
-              `Could not remove job scan-batch ${job.id}: ${errorMessage}`,
-            );
-          }
-        }
-      }
+      await this.scanQueue.empty();
 
       await this.scanQueue.add(
         'scan-batch',
@@ -2725,34 +2694,7 @@ export class PhoneNumberService {
       batches.push(queuedPhoneIds.slice(i, i + BATCH_SIZE));
     }
 
-    const jobs = await this.scanQueue.getJobs(['waiting', 'active', 'delayed']);
-
-    // Xóa những job có name = 'send-bulk-messages-batch'
-    for (const job of jobs) {
-      if (job.name === 'send-bulk-messages-batch') {
-        try {
-          // Chỉ xóa job nếu không đang được xử lý (active jobs có thể không xóa được)
-          const jobState = await job.getState();
-          if (jobState !== 'active') {
-            await job.remove();
-          } else {
-            // Nếu job đang active, thử hủy job trước rồi mới xóa
-            await job.moveToFailed(
-              new Error('Job cancelled by scheduler'),
-              true,
-            );
-            await job.remove();
-          }
-        } catch (error: unknown) {
-          // Log lỗi nhưng tiếp tục xử lý, không throw để không làm gián đoạn cron job
-          const errorMessage =
-            error instanceof Error ? error.message : String(error);
-          this.logger.warn(
-            `Could not remove job send-bulk-messages-batch ${job.id}: ${errorMessage}`,
-          );
-        }
-      }
-    }
+    await this.scanQueue.empty();
 
     // Thêm từng batch vào queue
     // Mỗi batch 20 số sẽ được xử lý tuần tự trong processor với delay 15s giữa các tin nhắn
