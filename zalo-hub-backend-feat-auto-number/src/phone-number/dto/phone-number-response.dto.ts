@@ -51,6 +51,15 @@ export class PhoneNumberResponseDto {
   @ApiProperty({ required: false })
   lastMessageStatus?: string;
 
+  @ApiProperty({ required: false, description: 'Zalo UID' })
+  uid?: string;
+
+  @ApiProperty({ required: false, description: 'Zalo name' })
+  zaloName?: string;
+
+  @ApiProperty({ required: false, description: 'Display name' })
+  displayName?: string;
+
   @ApiProperty()
   createdAt: Date;
 
@@ -83,6 +92,9 @@ export class PhoneNumberResponseDto {
     dto.lastScannedAt = entity.lastScannedAt;
     dto.scanCount = entity.scanCount;
     dto.hasScanInfo = entity.hasScanInfo;
+    dto.uid = entity.uid;
+    dto.zaloName = entity.zaloName;
+    dto.displayName = entity.displayName;
     dto.createdAt = entity.createdAt;
     dto.updatedAt = entity.updatedAt;
     return dto;

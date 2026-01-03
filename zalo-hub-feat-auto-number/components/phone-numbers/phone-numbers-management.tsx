@@ -28,6 +28,7 @@ import {
 } from "@/lib/api/phone-numbers";
 import { accountApi } from "@/lib/api/account";
 import { Account } from "@/lib/types/account";
+import { zaloApi } from "@/lib/api/zalo";
 import { toast as sonnerToast } from "sonner";
 import {
   PhoneNumbersSearchFilters,
@@ -1644,11 +1645,11 @@ export function PhoneNumbersManagement({
     setIsSendMessageDialogOpen(true);
   };
 
-  const handleConfirmSendMessages = () => {
-    if (!messageContent.trim()) {
+  const handleConfirmSendMessages = async () => {
+    if (!messageContent.trim() && !selectedImage) {
       toast({
         title: "Lỗi",
-        description: "Vui lòng nhập nội dung tin nhắn",
+        description: "Vui lòng nhập nội dung tin nhắn hoặc chọn hình ảnh",
         variant: "destructive",
       });
       return;
@@ -1677,12 +1678,83 @@ export function PhoneNumbersManagement({
       return;
     }
 
-    // Gửi tất cả selected phones, backend sẽ validate và trả về lỗi cho những số không có uid
-    sendBulkMessagesMutation.mutate({
-      ids: selectedPhones.map((p) => p.id!),
-      accountId: selectedAccountId,
-      message: messageContent.trim(),
-    });
+    // Nếu có hình ảnh, gửi từng số một với image
+    if (selectedImage) {
+      // Lọc các số có uid (cần uid để gửi tin nhắn)
+      const phonesWithUid = selectedPhones.filter(
+        (p) => p.uid && p.uid.trim() !== ""
+      );
+
+      if (phonesWithUid.length === 0) {
+        toast({
+          title: "Lỗi",
+          description:
+            "Không có số điện thoại nào có UID. Vui lòng quét thông tin trước.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      try {
+        let successCount = 0;
+        let failedCount = 0;
+        const errors: string[] = [];
+
+        for (const phone of phonesWithUid) {
+          // Validate uid trước khi gửi
+          if (!phone.uid || phone.uid.trim() === "") {
+            failedCount++;
+            errors.push(`Số ${phone.phoneNumber}: Không có UID hợp lệ`);
+            continue;
+          }
+
+          try {
+            await zaloApi.sendMessageWithAttachments({
+              accountId: selectedAccountId,
+              friendZaloId: phone.uid.trim(),
+              files: [selectedImage],
+              message: messageContent.trim() || undefined,
+            });
+            successCount++;
+          } catch (error: any) {
+            failedCount++;
+            errors.push(
+              `Số ${phone.phoneNumber}: ${error.message || "Gửi thất bại"}`
+            );
+          }
+        }
+
+        queryClient.invalidateQueries({ queryKey: ["phone-numbers"] });
+        setIsSendMessageDialogOpen(false);
+        setMessageContent("");
+        setSelectedImage(null);
+
+        toast({
+          title: "Hoàn thành",
+          description: `Đã gửi ${successCount} tin nhắn thành công${
+            failedCount > 0 ? `, ${failedCount} thất bại` : ""
+          }`,
+          variant: failedCount > 0 ? "destructive" : "default",
+        });
+
+        if (errors.length > 0) {
+          console.error("Lỗi khi gửi tin nhắn:", errors);
+        }
+      } catch (error: any) {
+        toast({
+          title: "Lỗi",
+          description: error.message || "Gửi tin nhắn thất bại",
+          variant: "destructive",
+        });
+      }
+    } else {
+      // Nếu không có hình ảnh, gửi bulk messages như cũ
+      sendBulkMessagesMutation.mutate({
+        ids: selectedPhones.map((p) => p.id!),
+        accountId: selectedAccountId,
+        message: messageContent.trim(),
+      });
+    }
   };
 
   const handleToggleAutoScan = (enabled: boolean) => {
