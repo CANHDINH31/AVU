@@ -206,6 +206,7 @@ export function PhoneNumbersManagement({
   >("scan");
   const [isSendMessageDialogOpen, setIsSendMessageDialogOpen] = useState(false);
   const [messageContent, setMessageContent] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [detailPhone, setDetailPhone] = useState<PhoneNumber | null>(null);
   const [filtersCollapsed, setFiltersCollapsed] = useState(true);
@@ -2082,6 +2083,8 @@ export function PhoneNumbersManagement({
         onOpenChange={setIsSendMessageDialogOpen}
         messageContent={messageContent}
         onMessageContentChange={setMessageContent}
+        selectedImage={selectedImage}
+        onSelectedImageChange={setSelectedImage}
         selectedAccountId={selectedAccountId}
         accounts={accounts}
         selectedCount={selectedIds.size}
