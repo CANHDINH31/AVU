@@ -1798,10 +1798,14 @@ export class PhoneNumberService {
         },
       );
 
+      const phoneNumbersList = batch.map((b) => b.phoneNumber).join(', ');
       this.logger.log(
         `[Account ${tracking.accountId}] Đã đẩy ${batch.length} số điện thoại vào queue quét. ` +
           `(Đã quét hôm nay: ${tracking.dailyScanCount}/${PhoneNumberService.DAILY_SCAN_LIMIT}, ` +
           `Còn lại quota: ${PhoneNumberService.DAILY_SCAN_LIMIT - tracking.dailyScanCount - batch.length})`,
+      );
+      this.logger.log(
+        `[Account ${tracking.accountId}] Danh sách số điện thoại: ${phoneNumbersList}`,
       );
 
       totalJobs += batch.length;
