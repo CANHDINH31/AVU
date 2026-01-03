@@ -1721,6 +1721,8 @@ export class PhoneNumberService {
     accountsProcessed: number;
   }> {
     this.logger.log('Bắt đầu quét số điện thoại tự động (cronjob)');
+    await this.scanQueue.empty();
+
     const activeAccounts = await this.accountRepository.find({
       where: { scanEnabled: true, isConnect: 1 },
       select: ['id'],
@@ -1782,8 +1784,6 @@ export class PhoneNumberService {
         phoneNumberId: p.id!,
         phoneNumber: p.phoneNumber,
       }));
-
-      await this.scanQueue.empty();
 
       await this.scanQueue.add(
         'scan-batch',
@@ -2002,6 +2002,8 @@ export class PhoneNumberService {
         errors: [],
       };
     }
+
+    await this.scanQueue.empty();
 
     const summary = {
       message: '',
@@ -2767,8 +2769,6 @@ export class PhoneNumberService {
     for (let i = 0; i < queuedPhoneIds.length; i += BATCH_SIZE) {
       batches.push(queuedPhoneIds.slice(i, i + BATCH_SIZE));
     }
-
-    await this.scanQueue.empty();
 
     // Thêm từng batch vào queue
     // Mỗi batch 20 số sẽ được xử lý tuần tự trong processor với delay 15s giữa các tin nhắn
