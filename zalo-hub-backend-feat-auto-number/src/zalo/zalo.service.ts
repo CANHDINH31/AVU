@@ -293,6 +293,16 @@ export class ZaloService {
         existingSentFriendRequests.map((fr) => [fr.userId, fr]),
       );
 
+      if (!sentFriendRequests || typeof sentFriendRequests !== 'object') {
+        console.warn(`No sent friend requests found for account ${accountId}`, {
+          accountId,
+          type: typeof sentFriendRequests,
+          isNull: sentFriendRequests === null,
+          isUndefined: sentFriendRequests === undefined,
+          value: sentFriendRequests != null ? String(sentFriendRequests) : null,
+        });
+        return;
+      }
       // Convert object to array of friend requests
       const sentfriendRequestsArray = Object.values(sentFriendRequests);
 
