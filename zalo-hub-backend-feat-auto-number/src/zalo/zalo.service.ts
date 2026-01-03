@@ -860,6 +860,7 @@ export class ZaloService {
     accountId: number,
     friendZaloId: string,
     attachments: any[],
+    message?: string,
   ) {
     try {
       // Sử dụng SocketService để gọi sang zalo-listener thay vì tạo instance mới
@@ -867,6 +868,7 @@ export class ZaloService {
         accountId,
         friendZaloId,
         attachments,
+        message,
       );
     } catch (error) {
       throw new BadRequestException('Gửi tin nhắn thất bại: ' + error.message);

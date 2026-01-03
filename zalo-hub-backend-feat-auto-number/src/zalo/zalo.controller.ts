@@ -121,6 +121,7 @@ export class ZaloController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body('accountId', ParseIntPipe) accountId: number,
     @Body('friendZaloId') friendZaloId: string,
+    @Body('message') message?: string,
   ) {
     if (!files || files.length === 0) {
       return { success: false, message: 'No files uploaded' };
@@ -139,6 +140,7 @@ export class ZaloController {
       accountId,
       friendZaloId,
       attachments,
+      message,
     );
   }
 

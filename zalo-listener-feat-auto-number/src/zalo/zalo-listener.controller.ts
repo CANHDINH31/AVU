@@ -46,6 +46,7 @@ export class ZaloController {
     @UploadedFiles() files: Array<any>,
     @Body("accountId", ParseIntPipe) accountId: number,
     @Body("friendZaloId") friendZaloId: string,
+    @Body("message") message?: string,
     @Body("testError") testError?: boolean
   ) {
     if (!files || files.length === 0) {
@@ -62,7 +63,8 @@ export class ZaloController {
     return await this.zaloListenerService.sendMessageWithAttachments(
       accountId,
       friendZaloId,
-      attachments
+      attachments,
+      message
     );
   }
 

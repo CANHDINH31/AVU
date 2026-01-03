@@ -145,14 +145,19 @@ export const zaloApi = {
     accountId,
     friendZaloId,
     files,
+    message,
   }: {
     accountId: number;
     friendZaloId: string;
     files: File[];
+    message?: string;
   }) => {
     const formData = new FormData();
     formData.append("accountId", accountId.toString());
     formData.append("friendZaloId", friendZaloId);
+    if (message) {
+      formData.append("message", message);
+    }
     files.forEach((file) => {
       formData.append("files", file);
     });

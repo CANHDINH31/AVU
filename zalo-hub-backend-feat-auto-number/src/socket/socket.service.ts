@@ -17,6 +17,7 @@ export class SocketService {
     accountId: number,
     friendZaloId: string,
     attachments: any[],
+    message?: string,
   ) {
     try {
       const response = await firstValueFrom(
@@ -26,6 +27,7 @@ export class SocketService {
             accountId,
             friendZaloId,
             attachments,
+            message,
           },
         ),
       );

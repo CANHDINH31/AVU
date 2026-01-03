@@ -1040,7 +1040,8 @@ export class ZaloListenerService implements OnModuleInit, OnModuleDestroy {
   async sendMessageWithAttachments(
     accountId: number,
     friendZaloId: string,
-    attachments: any[]
+    attachments: any[],
+    message?: string
   ) {
     const instanceKey = this.findInstanceKeyByAccountId(accountId);
     if (!instanceKey) {
@@ -1074,7 +1075,7 @@ export class ZaloListenerService implements OnModuleInit, OnModuleDestroy {
 
       const result = await instance.api.sendMessage(
         {
-          msg: "",
+          msg: message || "",
           attachments: formattedAttachments,
         },
         friendZaloId,
