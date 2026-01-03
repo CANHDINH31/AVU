@@ -23,7 +23,7 @@ import {
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
-import { UpdateUserRankDto } from './dto/update-user-rank.dto';
+import { UpdateUserRankForUserDto } from './dto/update-user-rank.dto';
 import { GetUsersDto } from './dto/get-users.dto';
 import { PaginatedUsersDto } from './dto/paginated-users.dto';
 import { AdminChangePasswordDto } from './dto/change-password.dto';
@@ -144,7 +144,7 @@ export class AdminController {
   async updateUserRank(
     @Req() req,
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserRankDto: UpdateUserRankDto,
+    @Body() updateUserRankDto: UpdateUserRankForUserDto,
   ) {
     // Check if user is admin
     const isAdmin = await this.userService.isAdmin(req.user.sub);
